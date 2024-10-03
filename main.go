@@ -15,7 +15,7 @@ func main() {
 	c, err := client.Dial(client.Options{})
 
 	if err != nil {
-		log.Fatalln("Erro ao rodar o Worker")
+		log.Fatalln("Erro ao rodar o Worker: ", err.Error())
 	}
 
 	defer c.Close()
@@ -23,6 +23,11 @@ func main() {
 	w := worker.New(c, "greeting-tasks", worker.Options{})
 
 	w.RegisterWorkflow(app.SendGreetingWorkflow)
+
+	w.RegisterActivity(app.GreetingInEnglishActivity)
+	w.RegisterActivity(app.GreetingInPortugueseActivity)
+	w.RegisterActivity(app.GreetingInSpanishActivity)
+
 
 	if err = w.Run(worker.InterruptCh()); err != nil {
 		log.Fatalln("Erro ao iniciar o worker")
